@@ -1,6 +1,6 @@
 import random
 
-from django.shortcuts import HttpResponse
+from django.shortcuts import render
 
 facts = ["Hay 1424 cosas en una habitación promedio con las que Chuck Norris podría matarte. Incluyendo la habitación en sí.",
          "Chuck Norris es la medida del sistema internacional del dolor.",
@@ -14,16 +14,7 @@ facts = ["Hay 1424 cosas en una habitación promedio con las que Chuck Norris po
 
 def home(request):
     current_fact = random.choice(facts)
-    content = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Chuck Norris</title>
-    </head>
-    <body>
-        <p>Este es un hecho de Chuck Norris</p>
-        <blockquote>{current_fact}</blockquote>
-    </body>
-    </html>
-    """
-    return HttpResponse(content)
+    context = {
+        "current_fact": current_fact
+    }
+    return render(request, 'facts/index.html', context=context)
