@@ -4,8 +4,89 @@ Aplicación de ejemplo de programación back end con Django y MySQL.
 
 ## Tabla de contenidos
 
+- [Prerequisitos](#prerequisitos)
+  - [Instalación de MySQL](#instalación-de-mysql)
+    - [En Windows](#en-windows)
+    - [En macOS](#en-macos)
+    - [En Linux](#en-linux)
 - [Instalación](#instalación)
 - [Ejecución](#ejecución)
+
+## Prerequisitos
+
+### Instalación de MySQL
+
+Antes de ejecutar el proyecto, se debe instalar la base de datos [MySQL](https://www.mysql.com/). Para ello, debe seguir las instrucciones específicas para cada sistema operativo.
+
+#### En Windows
+
+Para instalar MySQL se deben seguir las [instrucciones oficiales](https://dev.mysql.com/doc/mysql-shell/8.0/en/mysql-shell-install-windows-quick.html) del proveedor.
+
+#### En macOS
+
+Instalar el servidor y el cliente de MySQL:
+
+```bash
+brew install mysql
+```
+
+Si no desea instalar el servidor MySQL, puede utilizar mysql-client en su lugar:
+
+```bash
+brew install mysql-client
+echo 'export PATH="/usr/local/opt/mysql-client/bin:$PATH"' >> ~/.bash_profile
+export PATH="/usr/local/opt/mysql-client/bin:$PATH"
+```
+
+#### En Linux
+
+Es posible que tenga que instalar las cabeceras y bibliotecas de desarrollo de Python 3 y MySQL de la siguiente manera:
+
+- Ubuntu/Debian
+
+  Primero, se debe actualizar el sistema operativo:
+
+  ```bash
+  sudo apt update && sudo apt upgrade
+  ```
+
+  Luego, debemos instalar el servidor MySQL. Este proceso instala el servidor y el cliente:
+
+  ```bash
+  sudo apt install mysql-server
+  ```
+
+  Si solo se desea instalar el cliente para conectarse a una instancia remota de MySQL, se debe ejecutar este comando en lugar del anterior:
+
+  ```bash
+  sudo apt install mysql-client
+  ```
+
+  Por último, se realiza la instalación de las herramientas de desarrollo
+
+  ```bash
+  sudo apt install python3-dev default-libmysqlclient-dev build-essential
+  ```
+
+- Red Hat/CentOS
+
+  Necesitarás actualizar el sistema escribiendo el siguiente comando:
+
+  ```bash
+  sudo yum update
+  ```
+
+  Una vez actualizado el sistema, es hora de instalar MySQL.
+
+  ```bash
+  sudo yum install mysql
+  ```
+
+  Por último, se realiza la instalación de las herramientas de desarrollo
+
+  ```bash
+  sudo yum install python3-devel mysql-devel
+  ```
 
 ## Instalación
 
@@ -120,7 +201,37 @@ Aplicación de ejemplo de programación back end con Django y MySQL.
 
 ## Ejecución
 
-En primer lugar, debemos efectuar las migraciones:
+En primer lugar, debemos crear la base de datos MySQL. Para ello, vamos a usar el cliente MySQL desde la línea de comandos:
+
+```bash
+mysql -h localhost -u root -p
+```
+
+Una vez conectados, ejecutaremos el siguiente comando:
+
+```mysql
+mysql> create schema chuck_norris;
+```
+
+Luego de crear la base de datos, debemos modificar el archivo `chuck_norris/settings.py` para agregar la conexión a MySQL. No hay que olvidar reemplazar los valores `<nombre_base_datos>`, `<direccion_servidor>`, `<usuario_base_datos>` y `<contraseña_base_datos>` con los propios:
+
+```python
+# Database
+# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': '<nombre_base_datos>',
+        'HOST': '<direccion_servidor>',
+        'PORT': '3306',
+        'USER': '<usuario_base_datos>',
+        'PASSWORD': '<contraseña_base_datos>'
+    }
+}
+```
+
+Una vez configurada la conexión, se deben efectuar las migraciones:
 
 ```bash
 python3 manage.py migrate
