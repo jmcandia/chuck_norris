@@ -21,5 +21,7 @@ from facts import views
 urlpatterns = [
     path('', views.home, name='Home'),
     path('new_fact/', views.new_fact, name='New'),
+    path('login/', views.login, name='Login'),
+    path('logout/', views.logout, name='Logout'),
     path('admin/', admin.site.urls),
 ]

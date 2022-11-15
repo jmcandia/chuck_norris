@@ -153,14 +153,16 @@
 </head>
 
 <body>
+    {% block content %}
+    <h1>Hola {{username}}</h1>
     <section class="component">
         <p>Este es un hecho de Chuck Norris</p>
-        {% block content %}
+
         <blockquote class="callout quote EN">
             {{current_fact.fact}}
         </blockquote>
-        {% endblock %}
     </section>
+    {% endblock %}
 </body>
 
 </html>
