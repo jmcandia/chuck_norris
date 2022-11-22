@@ -1,4 +1,5 @@
 
+from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
@@ -58,9 +59,11 @@ def login(request):
                 # Si el formulario es válido, se verifican los datos
                 username = form.cleaned_data['email']
                 password = form.cleaned_data['password']
-                if username == 'admin@inacap.cl' and password == '12345678':
+                # Usa la función authenticate de django.contrib.auth
+                user = authenticate(username=username, password=password)
+                if user is not None:
                     # Si los datos son válidos, crea la sesión
-                    request.session['username'] = username
+                    request.session['username'] = user.first_name or user.username
                     return HttpResponseRedirect('/')
         else:
             # Si no estamos recibiendo el formulario, entonces envíamos uno vacío
@@ -73,4 +76,4 @@ def logout(request):
     if request.session.has_key('username'):
         del request.session['username']
 
-    return HttpResponseRedirect('login/')
+    return HttpResponseRedirect('/login')
