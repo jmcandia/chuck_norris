@@ -2,9 +2,14 @@
 from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from facts.forms import FactForm, LoginForm
 from facts.models import Fact
+
+from .serializers import FactSerializer
 
 # Create your views here.
 
@@ -77,3 +82,47 @@ def logout(request):
         del request.session['username']
 
     return HttpResponseRedirect('/login')
+
+
+@api_view(['GET', 'POST'])
+def facts_list(request):
+    # Devuelve todos los datos
+    if request.method == 'GET':
+        facts = Fact.objects.all()
+        serializer = FactSerializer(facts, many=True)
+        return Response(serializer.data)
+
+    # Crea un nuevo registro
+    if request.method == 'POST':
+        serializer = FactSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def fact_detail(request, id):
+    # Verifica si existe el recurso
+    try:
+        fact = Fact.objects.get(id=id)
+    except Fact.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    # Obtiene un recurso por su id
+    if request.method == 'GET':
+        serializer = FactSerializer(fact)
+        return Response(serializer.data)
+
+    # Actualiza un recurso
+    if request.method == 'PUT':
+        serializer = FactSerializer(fact, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # Elimina un recurso
+    if request.method == 'DELETE':
+        fact.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

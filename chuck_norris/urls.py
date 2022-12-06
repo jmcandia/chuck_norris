@@ -24,4 +24,6 @@ urlpatterns = [
     path('login/', views.login, name='Login'),
     path('logout/', views.logout, name='Logout'),
     path('admin/', admin.site.urls),
+    path('api/facts', views.facts_list),
+    path('api/facts/<int:id>', views.fact_detail),
 ]
